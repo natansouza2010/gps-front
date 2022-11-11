@@ -2,15 +2,15 @@ import { format } from 'date-fns';
 import './header.scss';
 import ptBR from 'date-fns/locale/pt-BR';
 
-export const Header = () =>{
+export const Header = () => {
     const currentDate = format(new Date(), 'EEEEEE, d MMM', {
-        locale: ptBR 
+        locale: ptBR
     });
 
-    return(
+    return (
         <header>
 
-            <p>Vehicles Sales </p>
+            <p>Noticias Blog </p>
 
             <span>{currentDate}</span>
         </header>

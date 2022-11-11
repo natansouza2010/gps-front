@@ -4,145 +4,96 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api } from '../../services/api';
 import './index.scss'
-import {getRole} from '../../services/auth'
+import { getRole } from '../../services/auth'
 
 export const Form = () => {
     const user_role = getRole();
-   
-    const {id} = useParams();
-    
-    const [name, setName] = useState('');
-    const [model, setModel] = useState('');
-    const [image, setImage] = useState();
-    const [inputName, setInputName] = useState('');
-    const [inputBrand, setInputBrand] = useState('');
-    const [inputModel, setInputModel] = useState('');
-    const [inputValue, setInputValue] = useState('');
-    const [inputImage, setInputImage] = useState('');
-    
-    
-    useEffect(()=>{
-        if(id){
-            api.get('/veiculos/'+ id).then((response)=>{
-                const vehicle = response.data;
-                setName(vehicle.name);
-                setModel(vehicle.model);
-                setImage(vehicle.urlPhoto);
-                setInputName(vehicle.name);
-                setInputBrand(vehicle.brand);
-                setInputModel(vehicle.model);
-                setInputValue(vehicle.value);
-                setInputImage(vehicle.urlPhoto);
+
+    const { id } = useParams();
+
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [inputTitle, setInputTitle] = useState('');
+    const [inputDescription, setInputDescription] = useState('');
+
+
+    useEffect(() => {
+        if (id) {
+            api.get('/find/' + id).then((response) => {
+                const noticia = response.data;
+                setTitle(noticia.title);
+                setDescription(noticia.description);
+                setInputTitle(noticia.title);
+                setInputDescription(noticia.description);
+
+
             })
         }
-        
-    },[id])
-    
 
-    const put = (event:any) =>{
+    }, [id])
+
+
+    const put = (event: any) => {
         event.preventDefault();
         const data = {
-            name: inputName,
-            brand: inputBrand,
-            value: Number(inputValue),
-            model: inputModel,
-            urlPhoto:inputImage,
-        
+            title: inputTitle,
+            description: inputDescription,
+
+
         }
-       
-        api.put(`/veiculos/${id}`, data).then(response=>{
-            
+
+        api.put(`/editar/${id}`, data).then(response => {
+
             console.log(response);
         })
     }
 
-    const post = (event:any) =>{
+    const post = (event: any) => {
         event.preventDefault();
         const data = {
-            name: inputName,
-            brand: inputBrand,
-            value: Number(inputValue),
-            model: inputModel,
-            urlPhoto: inputImage,
+            title: inputTitle,
+            description: inputDescription,
         }
-        api.post("/veiculos/",data).then(response =>{
+        api.post("/criar/", data).then(response => {
             console.log(response);
-     })
-        
+        })
+
     }
-         
-    const deleteData = (event:any)=>{
+
+    const deleteData = (event: any) => {
         event.preventDefault();
-        api.delete(`/veiculos/${id}`).then(response=>{
+        api.delete(`/deletar/${id}`).then(response => {
             console.log(response);
         })
     }
-              
+
 
     return (
-    <div className="form-container">
-        <img className="imageCar" src={image} />
-        <div className="container">
-            {(id) ? (
-            <h3>{name} - {model} </h3>
-            ) :
-            (<h3>Adicionar novo Veículo</h3>)
-            }
-            
+        <div className="form-container">
+
             <form className="form">
-                {(id) && (
-                    <div className="group-id">
-                    <label htmlFor="id">Id</label>
-                    <input type="text" id="id" readOnly className="form-control" defaultValue={id}/>
-                    </div> 
-                )  
-                    
-                }
-                 
+
                 <div className="group-name">
-                    <label htmlFor="name">Nome</label>
-                    <input id="name" required className="form-control" value={inputName} onChange={(e)=>{setInputName(e.target.value)}}/>
+                    <label htmlFor="title">Titulo</label>
+                    <input id="title" required className="form-control" value={inputTitle} onChange={(e) => { setInputTitle(e.target.value) }} />
                 </div>
                 <div className="group-brand">
-                    <label htmlFor="brand">Marca</label>
-                    <input id="brand" required className="form-control" value={inputBrand} onChange={(e)=>{setInputBrand(e.target.value)}}/>
+                    <label htmlFor="description">Descricao</label>
+                    <input id="description" required className="form-control" value={inputDescription} onChange={(e) => { setInputDescription(e.target.value) }} />
                 </div>
+                <button onClick={put} type="submit" className="btn btn-primary">Salvar</button>
+                <button onClick={deleteData} type="submit" className="btn btn-danger">Deletar</button>
 
-                <div className="group-model">
-                    <label htmlFor="brand">Modelo</label>
-                    <input type="text" required id="model" className="form-control"  value={inputModel} onChange={(e)=>{setInputModel(e.target.value)}}/>
-                </div>
 
-                <div className="group-value">
-                    <label htmlFor="brand">Valor</label>
-                    <input type="number" required id="valor" className="form-control" value={inputValue} onChange={(e)=>{setInputValue(e.target.value)}}/>
-                </div>
 
-                <div className="group-value">
-                    <label htmlFor="brand">URl Imagem</label>
-                    <input type="text" placeholder="URL da Imagem" id="valor" className="form-control"  value= {inputImage} onChange={(e)=>{setInputImage(e.target.value)}} />
-                </div>
+                <Link to="/">
+                    <button className="btn btn-primary">Cancelar</button>
 
-                
-                <div className="btn-container">
-                {(user_role) === 'ROLE_ADMIN' &&
-                    <>
-                    {(id)  ? 
-                        (
-                        <><button onClick={put} type="submit" className="btn btn-primary">Salvar</button>
-                        <button onClick={deleteData} type="submit" className="btn btn-danger">Deletar</button>
-                        </>)
+                </Link>
 
-                        : (<button onClick={post}type="submit" className="btn btn-primary">Salvar</button>) 
-                    }
-                    </>
-                }
-                    <Link to="/">
-                        <button className="btn btn-primary">Cancelar</button>
-                    </Link>
-                </div>
+
             </form >
-            
+
         </div >
-    </div >)
+    )
 }

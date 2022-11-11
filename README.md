@@ -25,7 +25,7 @@ A aplicação possui 2 Componentes que serão utilizados e reutilizados na aplic
 
 Header: possui apenas a navBar da página juntamente de uma estilização 
 
-VehicleCards: Será responsável por criar um novo Card de um veículo, para sua criação é necessário obter os dados atráves da propriedades `props`
+noticiaCards: Será responsável por criar um novo Card de um veículo, para sua criação é necessário obter os dados atráves da propriedades `props`
 
 
 ## Pages
